@@ -48,9 +48,10 @@ App = {
         }
       });
 
-      instance.matchJoined().watch ((err, response) => {
+      var filterMatchJoined = instance.matchJoined({opponent: App.userAccount});
+      filterMatchJoined.watch ((err, response) => {
         if(!err){
-          //TODO: implement
+          console.log("I joined");
         }
       });
 
@@ -81,8 +82,15 @@ App = {
     });
   },
 
+  joinMatch: function(index, address) {
+    App.contracts.Tictac.deployed().then(function(instance) {
+        instance.joinMatch(index, address);
+      }).catch(function(err){
+        console.error(err);
+      });
+  },
+
   selectSquare: function(column, row) {
-    console.log("Column:"+column+"  Row:"+row);
     if($("#identificativoPartita").html()==""){
       App.contracts.Tictac.deployed().then(function(instance) {
         instance.createMatch();
@@ -115,7 +123,11 @@ function aggiungiPartitaDisponibile(partita){
     }
   })
   if(!found){
-    $("#joinableMatchesTable").append("<tr class='joinableMatchesRow'><td class='joinableIndexColumn'>"+partita[0]+"</td><td class='joinableAddressColumn'>"+partita[1]+"</td><th>button</th></tr>");
+    $("#joinableMatchesTable").append("<tr class='joinableMatchesRow'><td class='joinableIndexColumn'>"+partita[0]+"</td><td class='joinableAddressColumn'>"+partita[1]+"</td><th>" +
+      "<form onSubmit='App.selectSquare("+partita[0]+", "+partita[1]+"); return false;'>"+
+        "<button type='submit'>Join!</button>"+
+      "</form></th></tr>"
+    );
   }    
 }
 
