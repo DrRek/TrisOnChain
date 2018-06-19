@@ -1,0 +1,128 @@
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+      <title>TicTacToe</title>
+
+      <!-- Bootstrap -->
+      <link href="css/bootstrap.min.css" rel="stylesheet">
+      <link href="css/tictac.css" rel="stylesheet">
+
+      <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+      <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+      <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+
+
+        <div class="row">
+          <div id="info" class="col-lg-4">
+            <div id="giocatoreX"></div>
+            <div id="giocatoreY"></div>
+          </div>
+          <div class="col-lg-12">
+
+      <![endif]-->
+    </head>
+    <body>
+
+      <div class="container">
+        <h1 class="text-center">TicTacToe</h1>
+        <hr/>
+        <br/>
+        <div id="loader" style="display: none;">
+          <p class="text-center">Loading...</p>
+        </div>
+        <div id="content" style="display: block;">
+
+          <div class="row">
+            <div id="info" class="col-lg-3">
+              <div id="giocatoreX"></div>
+              <div id="iiocatoreY"></div>
+              <div id="identificativoPartita"></div>
+            </div>
+
+            <div id="table" class="col-lg-6">
+              <div class="row">
+                <div class="col-sm-4">
+                  <form onSubmit="App.selectSquare(0, 0); return false;">
+                    <button id='cell00' type="submit" class="square">Vote</button>
+                  </form>
+                </div>
+                <div class="col-sm-4">
+                  <form onSubmit="App.selectSquare(0, 1); return false;">
+                    <button id='cell01' type="submit" class="square">Vote</button>
+                  </form>
+                </div>
+                <div class="col-sm-4">
+                  <form onSubmit="App.selectSquare(0, 2); return false;">
+                    <button id='cell02' type="submit" class="square">Vote</button>
+                  </form>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4">
+                  <form onSubmit="App.selectSquare(1, 0); return false;">
+                    <button id='cell10' type="submit" class="square">Vote</button>
+                  </form>
+                </div>
+                <div class="col-sm-4">
+                  <form onSubmit="App.selectSquare(1, 1); return false;">
+                    <button id='cell11' type="submit" class="square">Vote</button>
+                  </form>
+                </div>
+                <div class="col-sm-4">
+                  <form onSubmit="App.selectSquare(1, 2); return false;">
+                    <button id='cell12' type="submit" class="square">Vote</button>
+                  </form>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4">
+                  <form onSubmit="App.selectSquare(2, 0); return false;">
+                    <button id='cell20' type="submit" class="square">Vote</button>
+                  </form>
+                </div>
+                <div class="col-sm-4">
+                  <form onSubmit="App.selectSquare(2, 1); return false;">
+                    <button id='cell21' type="submit" class="square">Vote</button>
+                  </form>
+                </div>
+                <div class="col-sm-4">
+                  <form onSubmit="App.selectSquare(2, 2); return false;">
+                    <button id='cell22' type="submit" class="square">Vote</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+              
+            <div id="joinableMatches" class="col-lg-3 container">   
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Player1</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="joinableMatchesTable">
+                  
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+      <!-- Include all compiled plugins (below), or include individual files as needed -->
+      <script src="js/bootstrap.min.js"></script>
+      <script src="js/web3.min.js"></script>
+      <script src="js/truffle-contract.js"></script>
+      <script src="js/app.js"></script>
+    </body>
+  </html>

@@ -1,0 +1,20 @@
+#table {
+  border-collapse: collapse;
+  justify-content: center;
+  align-content: center;
+  margin: auto;
+}
+
+.col-sm-4 {
+  padding: 0 !important;
+}
+
+.square {
+  width: 100%;
+  padding-top: 20%;
+  padding-bottom: 20%;
+  font-size: 30px;
+  background-size: cover;
+  background-position: center;
+  margin: 0 0 0 0;
+}
