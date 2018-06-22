@@ -1,8 +1,6 @@
 pragma solidity ^0.4.24;
 
-import "./Ownable.sol";
-
-contract Tictac is Ownable{
+contract Tictac {
 	
     event newProposedMatch(uint index, address indexed firstPlayer);
     event matchJoined(uint indexed index, address indexed proposer, address indexed opponent);
@@ -14,39 +12,39 @@ contract Tictac is Ownable{
     	address playerTwo;
     	uint8 turno;
         uint8[3][3] table;
+        bool isEnded;
 	}
 
-	Match[] public pendingMatches;
-	Match[] public runningMatches;
+    Match[] public runningMatches;
 
 	/* Questi mapping conterranno l'indice+1 della partita in corso di "address"
 	 * E' sommato ad uno così da poter distinguere il return "0" quando nessun
 	 * valore è stato mappato.
 	 */
-	mapping(address => uint) public matchIndexOfProposer;
 	mapping(address => uint) public matchIndexOfPlayers;
 	
 	function createMatch() public {
-		require(senderHasNoCurrentGame());
+		require(senderIsNotPlaying());
 	    uint8[3][3] memory emptyTable;
-	    uint index = pendingMatches.push(Match(msg.sender, 0x0, 2, emptyTable));
-	    matchIndexOfProposer[msg.sender] = index;
+	    uint index = runningMatches.push(Match(msg.sender, 0x0, 2, emptyTable, false));
+	    matchIndexOfPlayers[msg.sender] = index;
 	    emit newProposedMatch(index, msg.sender);
 	}
 
+	/* Metodo utilizzato per joinare una partita proposta.
+	 */
 	function joinMatch(uint _id, address _proposer) public {
-		require(senderHasNoCurrentGame() && isValidMatch(_id, _proposer));
-		matchIndexOfProposer[_proposer] = 0;
-		Match memory currentMatch = pendingMatches[_id - 1];
-	    delete pendingMatches[_id - 1]; //TODO: I should avoid leaving gaps
-		currentMatch.playerTwo = msg.sender;
-		uint newIndex = runningMatches.push(currentMatch);
-		matchIndexOfPlayers[_proposer] = newIndex;
-	    matchIndexOfPlayers[msg.sender] = newIndex;
+		// Controlliamo che chi vuole partecipare non sta già svolgendo o proponendo una partita
+		// Controlliamo che la partita sia ancora effettivamente valida e disponibile
+		require(senderIsNotPlaying() && isValidMatch(_id, _proposer) && isAvailableMatch(_id));
+		// Giocatore 2 aggiunto alla partita
+		runningMatches[_id - 1].playerTwo = msg.sender;
+	    matchIndexOfPlayers[msg.sender] = _id;
+		// Invio l'evento per aggiornare
 	    emit matchJoined(_id, _proposer, msg.sender);
 	}
 
-	function play(uint _x, uint _y, uint _index) public{
+	/*function play(uint _x, uint _y, uint _index) public{
 		require(_x>=0 && _x<3 && _y>=0 && _y<3 && isHisTurn(_index));
 		Match memory playingMatch = runningMatches[_index];
 		if(playingMatch.table[_x][_y] == 0){
@@ -75,22 +73,14 @@ contract Tictac is Ownable{
 				emit nextMove(_index);
 			}
 		}
+	}*/
+
+	function getRunningMatchesCount() public view returns(uint){
+		return runningMatches.length;
 	}
 
-	function getPendingMatchesCount() public view returns(uint){
-		return pendingMatches.length;
-	}
-
-	function getPendingMatchAtIndex(uint index) public view returns(uint, address) {
-    	return (index, pendingMatches[index-1].playerOne);
-	}
-
-	function senderHasNoCurrentGame() view public returns(bool){
-		return (senderIsNotProposing() && senderIsNotPlaying());
-	}
-
-	function senderIsNotProposing() view public returns(bool){
-		return (matchIndexOfProposer[msg.sender] == 0);
+	function getRunningMatchAtIndex(uint index) public view returns(uint, address, address, bool) {
+    	return (index, runningMatches[index-1].playerOne, runningMatches[index-1].playerTwo, runningMatches[index-1].isEnded);
 	}
 
 	function senderIsNotPlaying() view public returns(bool){
@@ -98,7 +88,11 @@ contract Tictac is Ownable{
 	}
 
 	function isValidMatch(uint _index, address _proposer) view public returns(bool){
-		return (matchIndexOfProposer[_proposer] == _index);
+		return (matchIndexOfPlayers[_proposer] == _index);
+	}
+
+	function isAvailableMatch(uint _index) view public returns(bool){
+		return (runningMatches[_index - 1].playerTwo == 0x0);
 	}
 
 	function isHisTurn(uint _index) view public returns(bool){

@@ -42,16 +42,18 @@ App = {
   listenForEvents: function(){
     App.contracts.Tictac.deployed().then(function(instance){
       instance.newProposedMatch().watch ((err, response) => {
+        console.log("Evento nuova partita proposta");
         if(!err){
           var partita = [response.args.index, response.args.firstPlayer];
           aggiungiPartitaDisponibile(partita);
         }
       });
 
-      var filterMatchJoined = instance.matchJoined({opponent: App.userAccount});
-      filterMatchJoined.watch ((err, response) => {
+      instance.matchJoined().watch ((err, response) => {
+        console.log("Evento partita non più disponibile");
         if(!err){
-          console.log("I joined");
+          var partita = [response.args.index, response.args.proposer];
+          rimuoviPartitaDisponibile(partita);
         }
       });
 
@@ -74,9 +76,9 @@ App = {
     App.contracts.Tictac.deployed().then(function(instance){
       tictacInstance = instance;
 
-      tictacInstance.getPendingMatchesCount().then(function(numeroDiPartiteDisponibili){
+      tictacInstance.getRunningMatchesCount().then(function(numeroDiPartiteDisponibili){
         for(var i=1; i<=numeroDiPartiteDisponibili; i++){
-          tictacInstance.getPendingMatchAtIndex(i).then( aggiungiPartitaDisponibile);
+          tictacInstance.getRunningMatchAtIndex(i).then( aggiungiPartitaDisponibile);
         }
       })
     });
@@ -84,10 +86,10 @@ App = {
 
   joinMatch: function(index, address) {
     App.contracts.Tictac.deployed().then(function(instance) {
-        instance.joinMatch(index, address);
-      }).catch(function(err){
-        console.error(err);
-      });
+      instance.joinMatch(index, address);
+    }).catch(function(err){
+      console.error(err);
+    });
   },
 
   selectSquare: function(column, row) {
@@ -112,23 +114,36 @@ App = {
 };
 
 function aggiungiPartitaDisponibile(partita){
-  var found = false;
+  if(partita.length==2 || (partita[2]=="0x0000000000000000000000000000000000000000" && !partita[3])){
+    var found = false;
+    $(".joinableMatchesRow").each(function(index){
+      var firstTd = $(this).find(".joinableIndexColumn");
+      var secondTd = $(this).find(".joinableAddressColumn");
+      if(firstTd.html() == partita[0]){
+        secondTd.html(partita[1]);
+        found = true;
+        return;
+      }
+    })
+    if(!found){
+      $("#joinableMatchesTable").append("<tr class='joinableMatchesRow'><td class='joinableIndexColumn'>"+partita[0]+"</td><td class='joinableAddressColumn'>"+partita[1]+"</td><th>" +
+        "<form onSubmit='App.joinMatch("+partita[0]+", \""+partita[1]+"\"); return false;'>"+
+          "<button type='submit'>Join!</button>"+
+        "</form></th></tr>"
+      );
+    }   
+  } 
+}
+
+function rimuoviPartitaDisponibile(partita){
   $(".joinableMatchesRow").each(function(index){
-    var firstTd = $(this).find(".joinableIndexColumn");
-    var secondTd = $(this).find(".joinableAddressColumn");
-    if(firstTd.html() == partita[0]){
-      secondTd.html(partita[1]);
-      found = true;
-      return;
-    }
-  })
-  if(!found){
-    $("#joinableMatchesTable").append("<tr class='joinableMatchesRow'><td class='joinableIndexColumn'>"+partita[0]+"</td><td class='joinableAddressColumn'>"+partita[1]+"</td><th>" +
-      "<form onSubmit='App.selectSquare("+partita[0]+", "+partita[1]+"); return false;'>"+
-        "<button type='submit'>Join!</button>"+
-      "</form></th></tr>"
-    );
-  }    
+      var firstTd = $(this).find(".joinableIndexColumn");
+      var secondTd = $(this).find(".joinableAddressColumn");
+      if(firstTd.html() == partita[0] && secondTd.html() == partita[1]){
+        $(this).remove();
+        return;
+      }
+    })
 }
 
 $(function() {
