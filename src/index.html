@@ -31,89 +31,95 @@
 
       <div class="container">
         <h1 class="text-center">TicTacToe</h1>
+        <div id="warning" style="text-align: center; background: #ff9966; margin: 10px auto; padding: 5px; width: 50%; display: none; border-radius: 5px;">
+          <div id="warning-text">Attenzione</div>
+          <button onclick="$('#warning').hide();">OK!</button>
+        </div>
         <hr/>
-        <br/>
-        <div id="loader" style="display: none;">
+        <div id="loader">
           <p class="text-center">Loading...</p>
         </div>
-        <div id="content" style="display: block;">
 
-          <div class="row">
-            <div id="info" class="col-lg-2">
-              <div id="giocatoreX"></div>
-              <div id="iiocatoreY"></div>
-              <div id="identificativoPartita"></div>
+        <div id="playing" style="display: none;">
+          <div id="info" class="col-lg-4">
+            <br>
+            <div id="giocatoreX" style="padding: 5px;margin: 5px; border-radius: 5px;"></div>
+            <br>
+            <div id="giocatoreO" style="padding: 5px;margin: 5px; border-radius: 5px;"></div>
+            <br>
+            <div style="padding: 5px;margin: 5px; border-radius: 5px;">Identifier: <div id="identificativoPartita"></div></div>
+            <div id="turn" style="padding: 5px;margin: 5px; border-radius: 5px;"></div>
+          </div>
+          <div id="table" class="col-lg-8">
+            <div class="row">
+              <div class="col-sm-4">
+                <form onSubmit="App.selectSquare(0, 0); return false;">
+                  <button id='cell00' type="submit" class="square">-</button>
+                </form>
+              </div>
+              <div class="col-sm-4">
+                <form onSubmit="App.selectSquare(0, 1); return false;">
+                  <button id='cell01' type="submit" class="square">-</button>
+                </form>
+              </div>
+              <div class="col-sm-4">
+                <form onSubmit="App.selectSquare(0, 2); return false;">
+                  <button id='cell02' type="submit" class="square">-</button>
+                </form>
+              </div>
             </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <form onSubmit="App.selectSquare(1, 0); return false;">
+                  <button id='cell10' type="submit" class="square">-</button>
+                </form>
+              </div>
+              <div class="col-sm-4">
+                <form onSubmit="App.selectSquare(1, 1); return false;">
+                  <button id='cell11' type="submit" class="square">-</button>
+                </form>
+              </div>
+              <div class="col-sm-4">
+                <form onSubmit="App.selectSquare(1, 2); return false;">
+                  <button id='cell12' type="submit" class="square">-</button>
+                </form>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <form onSubmit="App.selectSquare(2, 0); return false;">
+                  <button id='cell20' type="submit" class="square">-</button>
+                </form>
+              </div>
+              <div class="col-sm-4">
+                <form onSubmit="App.selectSquare(2, 1); return false;">
+                  <button id='cell21' type="submit" class="square">-</button>
+                </form>
+              </div>
+              <div class="col-sm-4">
+                <form onSubmit="App.selectSquare(2, 2); return false;">
+                  <button id='cell22' type="submit" class="square">-</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
 
-            <div id="table" class="col-lg-6">
-              <div class="row">
-                <div class="col-sm-4">
-                  <form onSubmit="App.selectSquare(0, 0); return false;">
-                    <button id='cell00' type="submit" class="square">-</button>
-                  </form>
-                </div>
-                <div class="col-sm-4">
-                  <form onSubmit="App.selectSquare(0, 1); return false;">
-                    <button id='cell01' type="submit" class="square">-</button>
-                  </form>
-                </div>
-                <div class="col-sm-4">
-                  <form onSubmit="App.selectSquare(0, 2); return false;">
-                    <button id='cell02' type="submit" class="square">-</button>
-                  </form>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-4">
-                  <form onSubmit="App.selectSquare(1, 0); return false;">
-                    <button id='cell10' type="submit" class="square">-</button>
-                  </form>
-                </div>
-                <div class="col-sm-4">
-                  <form onSubmit="App.selectSquare(1, 1); return false;">
-                    <button id='cell11' type="submit" class="square">-</button>
-                  </form>
-                </div>
-                <div class="col-sm-4">
-                  <form onSubmit="App.selectSquare(1, 2); return false;">
-                    <button id='cell12' type="submit" class="square">-</button>
-                  </form>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-sm-4">
-                  <form onSubmit="App.selectSquare(2, 0); return false;">
-                    <button id='cell20' type="submit" class="square">-</button>
-                  </form>
-                </div>
-                <div class="col-sm-4">
-                  <form onSubmit="App.selectSquare(2, 1); return false;">
-                    <button id='cell21' type="submit" class="square">-</button>
-                  </form>
-                </div>
-                <div class="col-sm-4">
-                  <form onSubmit="App.selectSquare(2, 2); return false;">
-                    <button id='cell22' type="submit" class="square">-</button>
-                  </form>
-                </div>
-              </div>
-            </div>
-              
-            <div id="joinableMatches" class="col-lg-4 container">   
-              <h3>Join match:</h6>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Id</th>
-                    <th>Player1</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody id="joinableMatchesTable">
-                  
-                </tbody>
-              </table>
-            </div>
+        <div id="lobby" style="display: none;">
+          <div id="joinableMatches" class="container" style="width: 75%;">   
+            <h3>Join match:</h6>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Player1</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="joinableMatchesTable"></tbody>
+            </table>
+
+            <button onclick="App.proposeMatch(); return false;">Propose a new Match!</button>
           </div>
         </div>
       </div>

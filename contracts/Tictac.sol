@@ -44,43 +44,47 @@ contract Tictac {
 	    emit matchJoined(_id, _proposer, msg.sender);
 	}
 
-	/*function play(uint _x, uint _y, uint _index) public{
+	function play(uint _x, uint _y, uint _index) public{
 		require(_x>=0 && _x<3 && _y>=0 && _y<3 && isHisTurn(_index));
-		Match memory playingMatch = runningMatches[_index];
+		Match memory playingMatch = runningMatches[_index-1];
+		require(!playingMatch.isEnded);
 		if(playingMatch.table[_x][_y] == 0){
 			if(playingMatch.playerOne == msg.sender){
 				playingMatch.table[_x][_y] = 1;
+				playingMatch.turno = 2;
 			} else{
 				playingMatch.table[_x][_y] = 2;
+				playingMatch.turno = 1;
 			}
 
 			if(hasWin(playingMatch.table, _x, _y)){
 				address loser;
-				if(playingMatch.turno == 1){
+				if(playingMatch.playerOne == msg.sender){
 					loser = playingMatch.playerTwo;
 				}else{
 					loser = playingMatch.playerOne;
 				}
-				delete runningMatches[_index]; //TODO: I should avoid leaving gaps
+				matchIndexOfPlayers[playingMatch.playerOne] = 0;
+				matchIndexOfPlayers[playingMatch.playerTwo] = 0;
 				emit matchEnded(_index, msg.sender, loser, playingMatch.table);
-			} else {
-				if(playingMatch.turno == 1){
-					playingMatch.turno = 2;
-				}else{
-					playingMatch.turno = 1;
-				}
-				runningMatches[_index] = playingMatch;
+				playingMatch.isEnded = true;
+			}else{
 				emit nextMove(_index);
 			}
+			runningMatches[_index-1] = playingMatch;
 		}
-	}*/
+	}
 
 	function getRunningMatchesCount() public view returns(uint){
 		return runningMatches.length;
 	}
 
-	function getRunningMatchAtIndex(uint index) public view returns(uint, address, address, bool) {
-    	return (index, runningMatches[index-1].playerOne, runningMatches[index-1].playerTwo, runningMatches[index-1].isEnded);
+	function getRunningMatchAtIndex(uint index) public view returns(uint, address, address, bool, uint) {
+    	return (index, runningMatches[index-1].playerOne, runningMatches[index-1].playerTwo, runningMatches[index-1].isEnded, runningMatches[index-1].turno);
+	}
+
+	function getRunningMatchBoardAtIndex(uint index) public view returns(uint8[3][3]) {
+    	return runningMatches[index-1].table;
 	}
 
 	function senderIsNotPlaying() view public returns(bool){
