@@ -103,18 +103,42 @@ contract Tictac {
 		return ((runningMatches[_index - 1].playerOne == msg.sender && runningMatches[_index - 1].turno == 1) || (runningMatches[_index - 1].playerTwo == msg.sender && runningMatches[_index - 1].turno == 2));
 	}
 
-	function hasWin(uint8[3][3] _table, uint _modifiedRow, uint _modifiedColumn) pure public returns(bool){
-		if(_modifiedRow == _modifiedColumn){
-			return (
-					triEqual(_table[_modifiedRow][_modifiedColumn], _table[(_modifiedRow + 1) % 3][(_modifiedColumn + 1) % 3], _table[(_modifiedRow + 2) % 3][(_modifiedColumn + 2) % 3]) ||
-					triEqual(_table[_modifiedRow][_modifiedColumn], _table[(_modifiedRow + 1) % 3][_modifiedColumn], _table[(_modifiedRow + 2) % 3][_modifiedColumn]) ||
-					triEqual(_table[_modifiedRow][_modifiedColumn], _table[_modifiedRow][(_modifiedColumn + 1) % 3], _table[_modifiedRow][(_modifiedColumn + 2) % 3])
-				);
-		} else {
-			return (
-					triEqual(_table[_modifiedRow][_modifiedColumn], _table[(_modifiedRow + 1) % 3][_modifiedColumn], _table[(_modifiedRow + 2) % 3][_modifiedColumn]) ||
-					triEqual(_table[_modifiedRow][_modifiedColumn], _table[_modifiedRow][(_modifiedColumn + 1) % 3], _table[_modifiedRow][(_modifiedColumn + 2) % 3])
-				);
+	function hasWin(uint8[3][3] _t, uint _mR, uint _mC) pure public returns(bool){
+		if(_mR == 1){
+			if(_mC == 1){		//Colonna centrale con riga centrale, 4 controlli necessari
+				return (
+						triEqual(_t[1][0], _t[1][1], _t[1][2]) ||
+						triEqual(_t[0][1], _t[1][1], _t[2][1]) ||
+						triEqual(_t[0][0], _t[1][1], _t[2][2]) ||
+						triEqual(_t[0][2], _t[1][1], _t[2][0])
+					);
+			} else {			//Colonne laterali con riga centrale, 2 controlli necessari
+				return (
+						triEqual(_t[_mR][_mC], _t[_mR][(_mC + 1) % 3], _t[_mR][(_mC + 2) % 3]) ||
+						triEqual(_t[_mR][_mC], _t[(_mR + 1) % 3][_mC], _t[(_mR + 2) % 3][_mC])
+					);
+			}
+		} else {									
+			if(_mC == 1){		//Colonna centrale con righe laterali, 2 controlli necessari
+				return (
+						triEqual(_t[_mR][_mC], _t[_mR][(_mC + 1) % 3], _t[_mR][(_mC + 2) % 3]) ||
+						triEqual(_t[_mR][_mC], _t[(_mR + 1) % 3][_mC], _t[(_mR + 2) % 3][_mC])
+					);
+			} else {			//Colonne laterali con righe laterali, 3 controlli necessari
+				if(_C == _mR){
+					return (
+							triEqual(_t[_mR][_mC], _t[_mR][(_mC + 1) % 3], _t[_mR][(_mC + 2) % 3]) ||
+							triEqual(_t[_mR][_mC], _t[(_mR + 1) % 3][_mC], _t[(_mR + 2) % 3][_mC]) ||
+							triEqual(_t[0][0], _t[1][1], _t[2][2])
+						);
+				} else {
+					return (
+							triEqual(_t[_mR][_mC], _t[_mR][(_mC + 1) % 3], _t[_mR][(_mC + 2) % 3]) ||
+							triEqual(_t[_mR][_mC], _t[(_mR + 1) % 3][_mC], _t[(_mR + 2) % 3][_mC]) ||
+							triEqual(_t[0][2], _t[1][1], _t[2][0])
+						);
+				}
+			}
 		}
 	}
 
