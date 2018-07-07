@@ -12,7 +12,7 @@ contract Tictac {
     	address playerTwo;
     	uint8 turno;
         uint8[3][3] table;
-        bool isEnded;
+        bool isEnded; //TODO: Invece di questo in una prossima versione posso usare direttamente i possibili valori di turno, per esempio 0
 	}
 
     Match[] public runningMatches;
@@ -125,7 +125,7 @@ contract Tictac {
 						triEqual(_t[_mR][_mC], _t[(_mR + 1) % 3][_mC], _t[(_mR + 2) % 3][_mC])
 					);
 			} else {			//Colonne laterali con righe laterali, 3 controlli necessari
-				if(_C == _mR){
+				if(_mC == _mR){
 					return (
 							triEqual(_t[_mR][_mC], _t[_mR][(_mC + 1) % 3], _t[_mR][(_mC + 2) % 3]) ||
 							triEqual(_t[_mR][_mC], _t[(_mR + 1) % 3][_mC], _t[(_mR + 2) % 3][_mC]) ||
