@@ -2,8 +2,11 @@ App = {
   web3Provider: null,
   contracts: {},
   userAccount: null,
+  //Ricordati di inserire l'address del contratto come stringa
+  contractAddress: "0x506a3b3cc818e859c5d51bf11b12355e52047855",
 
   init: function() {
+
     // TODO: refactor conditional
     if (typeof web3 !== 'undefined') {
       // If a web3 instance is already provided by Meta Mask.
@@ -41,7 +44,7 @@ App = {
   },
 
   listenForEvents: function(){
-    App.contracts.Tictac.at("0xee413b83fdd7aac495303a87286bb9f30f917561").then(function(instance){
+    App.contracts.Tictac.at(App.contractAddress).then(function(instance){
       instance.newProposedMatch().watch ((err, response) => {
         console.log("Evento nuova partita proposta");
         if(!err){
@@ -88,7 +91,7 @@ App = {
 
   render: function(){
     $("#warning").hide();
-    App.contracts.Tictac.at("0xee413b83fdd7aac495303a87286bb9f30f917561").then(function(instance){
+    App.contracts.Tictac.at(App.contractAddress).then(function(instance){
         instance.senderIsNotPlaying().then(function(isNotPlaying){
           $("#loader").hide();
           if(isNotPlaying){
@@ -106,7 +109,7 @@ App = {
 
   renderPendingMatches: function(){
     $("#joinableMatchesTable").html("");
-    App.contracts.Tictac.at("0xee413b83fdd7aac495303a87286bb9f30f917561").then(function(instance){
+    App.contracts.Tictac.at(App.contractAddress).then(function(instance){
       tictacInstance = instance;
 
       tictacInstance.getRunningMatchesCount().then(function(numeroDiPartiteDisponibili){
@@ -118,7 +121,7 @@ App = {
   },
 
   renderMatchBoard: function(){
-    App.contracts.Tictac.at("0xee413b83fdd7aac495303a87286bb9f30f917561").then(function(instance) {
+    App.contracts.Tictac.at(App.contractAddress).then(function(instance) {
       instance.matchIndexOfPlayers(App.userAccount).then(function(matchIndex){
         if(matchIndex != 0){
           $("#identificativoPartita").html(matchIndex+"");
@@ -173,7 +176,7 @@ App = {
   },
 
   proposeMatch: function(){
-    App.contracts.Tictac.at("0xee413b83fdd7aac495303a87286bb9f30f917561").then(function(instance) {
+    App.contracts.Tictac.at(App.contractAddress).then(function(instance) {
       instance.createMatch();
     }).catch(function(err){
       console.error(err);
@@ -181,7 +184,7 @@ App = {
   },
 
   joinMatch: function(index, address) {
-    App.contracts.Tictac.at("0xee413b83fdd7aac495303a87286bb9f30f917561").then(function(instance) {
+    App.contracts.Tictac.at(App.contractAddress).then(function(instance) {
       instance.joinMatch(index, address).then(function(instance){
         renderMatchBoard();
       });
@@ -192,7 +195,7 @@ App = {
 
   selectSquare: function(column, row) {
     var id = $("#identificativoPartita").html();
-    App.contracts.Tictac.at("0xee413b83fdd7aac495303a87286bb9f30f917561").then(function(instance) {
+    App.contracts.Tictac.at(App.contractAddress).then(function(instance) {
       instance.play(column, row, id);
     }).catch(function(err) {
       console.error(err);
